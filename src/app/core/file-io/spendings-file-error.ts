@@ -1,6 +1,7 @@
 export const SpendingsFileErrorReason = {
-  InvalidJson: 'invalid-json',
-  InvalidStructure: 'invalid-structure',
+  UnsupportedEncoding: 'unsupported-encoding',
+  InvalidHeader: 'invalid-header',
+  InvalidRow: 'invalid-row',
 } as const;
 
 export type SpendingsFileErrorReason = (typeof SpendingsFileErrorReason)[keyof typeof SpendingsFileErrorReason];
