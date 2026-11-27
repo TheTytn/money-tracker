@@ -1,0 +1,57 @@
+// Colour and type tokens. Light values first, dark values for the system setting.
+:root {
+  --bg: #eef1f4;
+  --fg: #1b232c;
+  --muted: #5d6874;
+  --surface: #ffffff;
+  --line: #d9dee4;
+  --accent: #0f7b6c;
+  --accent-fg: #ffffff;
+  --accent-soft: rgb(15 123 108 / 14%);
+  --expense: #c2413b;
+  --income: #2f8a4f;
+  --on-semantic: #ffffff;
+  --error: #b3261e;
+  --scrim: rgb(15 22 30 / 45%);
+  --shadow: rgb(0 0 0 / 20%);
+  --chart-1: #2a78c4;
+  --chart-2: #e07a2f;
+  --chart-3: #3a9d5d;
+  --chart-4: #c2477a;
+  --chart-5: #8a63c9;
+  --chart-6: #c9a227;
+  --chart-7: #2aa3a3;
+  --chart-8: #8c8f94;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: var(--font-ui);
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12171c;
+    --fg: #e7ecf0;
+    --muted: #9aa6b2;
+    --surface: #1c232a;
+    --line: #2e3740;
+    --accent: #3cbfa8;
+    --accent-fg: #06221d;
+    --accent-soft: rgb(60 191 168 / 16%);
+    --expense: #d9534d;
+    --income: #3f9e60;
+    --error: #f2b8b5;
+    --scrim: rgb(0 0 0 / 60%);
+    --shadow: rgb(0 0 0 / 50%);
+    --chart-1: #5aa2e6;
+    --chart-2: #f09a55;
+    --chart-3: #5cc07f;
+    --chart-4: #e06f9d;
+    --chart-5: #a888e0;
+    --chart-6: #e0bf4a;
+    --chart-7: #4cc4c4;
+    --chart-8: #9ca3ab;
+
+    color-scheme: dark;
+  }
+}

@@ -1,32 +1,36 @@
-<h1>Money Tracker</h1>
+<app-page-header heading="Spendings" />
 
-<div class="home__actions">
-  <input #fileInput type="file" accept=".csv,text/csv" hidden aria-label="Data file" (change)="openFile(fileInput)" />
-  <button type="button" (click)="fileInput.click()">Open file</button>
-  <button type="button" (click)="store.createNew()">Create new file</button>
-</div>
+<main class="page-content">
+  <div class="period">
+    <button type="button" class="period__button" aria-label="Previous month" (click)="previousMonth()">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+    </button>
+    <span class="period__label" data-testid="month">{{ monthStart() | date: 'LLLL yyyy' }}</span>
+    <button type="button" class="period__button" aria-label="Next month" (click)="nextMonth()">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+    </button>
+  </div>
 
-@if (store.error(); as message) {
-  <p class="home__error" role="alert">{{ message }}</p>
-}
-
-<section aria-labelledby="stored-file-heading">
-  <h2 id="stored-file-heading">Stored file</h2>
-  @if (store.loading()) {
-    <p>Loading…</p>
-  } @else if (store.stored(); as current) {
-    <dl>
-      <dt>Name</dt>
-      <dd data-testid="file-name">{{ current.meta.name }}</dd>
-      <dt>Size</dt>
-      <dd>{{ current.meta.size }} bytes</dd>
-      <dt>Saved at</dt>
-      <dd>{{ current.meta.savedAt | date: 'medium' }}</dd>
-      <dt>Spendings</dt>
-      <dd data-testid="spendings-count">{{ store.spendings().length }}</dd>
-    </dl>
-    <button type="button" (click)="store.download()">Download</button>
-  } @else {
-    <p>No file stored yet. Open a file or create a new one.</p>
+  @if (store.error(); as message) {
+    <p class="error-message" role="alert">{{ message }}</p>
   }
-</section>
+
+  @if (store.loading()) {
+    <p class="home__empty">Loading…</p>
+  } @else if (totals().length) {
+    <app-category-chart [totals]="totals()" [currency]="currency()" />
+  } @else if (store.stored()) {
+    <p class="home__empty">No spendings this month.</p>
+  } @else {
+    <p class="home__empty">
+      No data yet. Add your first spending below, or
+      <a routerLink="/settings">open a file</a>
+      in Settings
+    </p>
+  }
+</main>
+
+<nav class="home__actions" aria-label="Add entry">
+  <a class="button button--expense" routerLink="/add/spending">− Spending</a>
+  <a class="button button--income" routerLink="/add/income">+ Income</a>
+</nav>

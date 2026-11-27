@@ -1,0 +1,82 @@
+<app-page-header backLink="/" [heading]="heading()" />
+
+<form class="page-content" novalidate [formGroup]="form" (ngSubmit)="save()">
+  <div class="entry__types" role="group" aria-label="Type">
+    <button
+      type="button"
+      class="entry__type"
+      [class.entry__type--expense]="selectedType() === entryType.Spending"
+      [attr.aria-pressed]="selectedType() === entryType.Spending"
+      (click)="selectType(entryType.Spending)"
+    >
+      Spending
+    </button>
+    <button
+      type="button"
+      class="entry__type"
+      [class.entry__type--income]="selectedType() === entryType.Income"
+      [attr.aria-pressed]="selectedType() === entryType.Income"
+      (click)="selectType(entryType.Income)"
+    >
+      Income
+    </button>
+  </div>
+
+  <div class="entry__field">
+    <label class="entry__label" for="entry-amount">Amount{{ currency() ? ', ' + currency() : '' }}</label>
+    <input
+      id="entry-amount"
+      class="entry__input entry__input--amount"
+      type="number"
+      inputmode="decimal"
+      step="0.01"
+      min="0.01"
+      placeholder="0.00"
+      formControlName="amount"
+    />
+    @if (form.controls.amount.touched && form.controls.amount.invalid) {
+      <p class="error-message">Enter an amount greater than zero.</p>
+    }
+  </div>
+
+  <div class="entry__field">
+    <label class="entry__label" for="entry-category">Category</label>
+    @if (suggestions().length) {
+      <div class="entry__chips">
+        @for (category of suggestions(); track category) {
+          <button
+            type="button"
+            class="entry__chip"
+            [class.entry__chip--selected]="form.controls.category.value === category"
+            [attr.aria-pressed]="form.controls.category.value === category"
+            (click)="pickCategory(category)"
+          >
+            {{ category }}
+          </button>
+        }
+      </div>
+    }
+    <input
+      id="entry-category"
+      class="entry__input"
+      type="text"
+      autocomplete="off"
+      placeholder="Pick one above or type a new one"
+      formControlName="category"
+    />
+    @if (form.controls.category.touched && form.controls.category.invalid) {
+      <p class="error-message">Choose or type a category.</p>
+    }
+  </div>
+
+  <div class="entry__field">
+    <label class="entry__label" for="entry-date">Date</label>
+    <input id="entry-date" class="entry__input" type="date" formControlName="date" />
+  </div>
+
+  @if (error(); as message) {
+    <p class="error-message" role="alert">{{ message }}</p>
+  }
+
+  <button type="submit" class="button button--primary">Save</button>
+</form>

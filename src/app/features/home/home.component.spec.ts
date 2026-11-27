@@ -1,36 +1,32 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
-import { FileIoService, SpendingsFileError, SpendingsFileErrorReason } from '@core/file-io';
+import { FileIoService } from '@core/file-io';
 import { FileStorageService } from '@core/storage';
 
-import { Spending, SpendingsFile, StoredFile } from '@shared/models';
+import { toIsoMonth } from '@shared/helpers';
+import { Spending, StoredFile } from '@shared/models';
 
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
-  const emptyFile: SpendingsFile = { spendings: [] };
+  const thisMonth = toIsoMonth(new Date());
   const spending: Spending = {
-    date: '2024-02-03',
+    date: `${thisMonth}-03`,
     account: 'Cash',
     category: 'Groceries',
     amount: -12.5,
-    currency: 'EUR',
+    currency: 'UAH',
     convertedAmount: -12.5,
-    convertedCurrency: 'EUR',
+    convertedCurrency: 'UAH',
     description: '',
   };
   const stored: StoredFile = {
-    file: { spendings: [spending, { ...spending, amount: -3 }] },
+    file: { spendings: [spending, { ...spending, category: 'Taxi', amount: -7.5, convertedAmount: -7.5 }] },
     meta: { name: 'mine.csv', size: 123, savedAt: '2026-11-27T17:00:00.000Z' },
   };
 
   let storage: { load: ReturnType<typeof vi.fn>; save: ReturnType<typeof vi.fn> };
-  let fileIo: {
-    readFile: ReturnType<typeof vi.fn>;
-    createEmpty: ReturnType<typeof vi.fn>;
-    serialize: ReturnType<typeof vi.fn>;
-    download: ReturnType<typeof vi.fn>;
-  };
 
   async function render(): Promise<{ fixture: ComponentFixture<HomeComponent>; element: HTMLElement }> {
     const fixture = TestBed.createComponent(HomeComponent);
@@ -38,94 +34,70 @@ describe('HomeComponent', () => {
     return { fixture, element: fixture.nativeElement as HTMLElement };
   }
 
-  function buttonByText(element: HTMLElement, text: string): HTMLButtonElement {
-    const button = Array.from(element.querySelectorAll('button')).find((b) => b.textContent?.trim() === text);
+  function buttonByLabel(element: HTMLElement, label: string): HTMLButtonElement {
+    const button = element.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`);
     if (!button) {
-      throw new Error(`Button "${text}" not found`);
+      throw new Error(`Button "${label}" not found`);
     }
     return button;
   }
 
   beforeEach(async () => {
-    storage = { load: vi.fn().mockResolvedValue(undefined), save: vi.fn().mockResolvedValue(undefined) };
-    fileIo = {
-      readFile: vi.fn(),
-      createEmpty: vi.fn().mockReturnValue(emptyFile),
-      serialize: vi.fn().mockReturnValue('header\n'),
-      download: vi.fn().mockResolvedValue(undefined),
-    };
+    storage = { load: vi.fn().mockResolvedValue(stored), save: vi.fn().mockResolvedValue(undefined) };
 
     await TestBed.configureTestingModule({
       imports: [HomeComponent],
       providers: [
+        provideRouter([]),
         { provide: FileStorageService, useValue: storage },
-        { provide: FileIoService, useValue: fileIo },
+        { provide: FileIoService, useValue: {} },
       ],
     }).compileComponents();
   });
 
-  it('should show the open and create buttons and an empty state', async () => {
+  it('should chart this month spendings by category', async () => {
     const { element } = await render();
 
-    expect(buttonByText(element, 'Open file')).toBeTruthy();
-    expect(buttonByText(element, 'Create new file')).toBeTruthy();
-    expect(element.textContent).toContain('No file stored yet');
+    expect(element.querySelectorAll('.legend__item')).toHaveLength(2);
+    expect(element.querySelector('[data-testid="chart-total"]')?.textContent).toContain('20.00');
+    expect(element.textContent).toContain('Total, UAH');
   });
 
-  it('should show info about the stored file', async () => {
-    storage.load.mockResolvedValue(stored);
+  it('should switch months', async () => {
+    const { fixture, element } = await render();
+    const label = element.querySelector('[data-testid="month"]')?.textContent;
+
+    buttonByLabel(element, 'Previous month').click();
+    await fixture.whenStable();
+
+    expect(element.querySelector('[data-testid="month"]')?.textContent).not.toBe(label);
+    expect(element.textContent).toContain('No spendings this month.');
+
+    buttonByLabel(element, 'Next month').click();
+    await fixture.whenStable();
+
+    expect(element.querySelector('[data-testid="month"]')?.textContent).toBe(label);
+  });
+
+  it('should point to Settings when no file is stored', async () => {
+    storage.load.mockResolvedValue(undefined);
 
     const { element } = await render();
 
-    expect(element.querySelector('[data-testid="file-name"]')?.textContent).toContain('mine.csv');
-    expect(element.querySelector('[data-testid="spendings-count"]')?.textContent).toContain('2');
-    expect(element.textContent).toContain('123 bytes');
+    expect(element.textContent).toContain('No data yet.');
+    expect(element.querySelector('a[href="/settings"]')).not.toBeNull();
   });
 
-  it('should download the stored file', async () => {
-    storage.load.mockResolvedValue(stored);
+  it('should link to the add spending and add income pages', async () => {
     const { element } = await render();
 
-    buttonByText(element, 'Download').click();
-
-    expect(fileIo.download).toHaveBeenCalledWith(stored.file, 'mine.csv');
+    expect(element.querySelector('a[href="/add/spending"]')?.textContent).toContain('Spending');
+    expect(element.querySelector('a[href="/add/income"]')?.textContent).toContain('Income');
   });
 
-  it('should create, store and download a new file', async () => {
-    const { fixture, element } = await render();
+  it('should have a menu button', async () => {
+    const { element } = await render();
 
-    buttonByText(element, 'Create new file').click();
-    await fixture.whenStable();
-
-    expect(storage.save).toHaveBeenCalledWith(emptyFile, expect.objectContaining({ name: 'money-tracker.csv' }));
-    expect(fileIo.download).toHaveBeenCalledWith(emptyFile, 'money-tracker.csv');
-    expect(element.querySelector('[data-testid="file-name"]')?.textContent).toContain('money-tracker.csv');
-  });
-
-  it('should store an opened file', async () => {
-    const picked = new File(['header\n'], 'picked.csv');
-    fileIo.readFile.mockResolvedValue(stored.file);
-    const { fixture, element } = await render();
-    const input = element.querySelector<HTMLInputElement>('input[type="file"]');
-    Object.defineProperty(input, 'files', { value: [picked] });
-
-    input?.dispatchEvent(new Event('change'));
-    await fixture.whenStable();
-
-    expect(storage.save).toHaveBeenCalledWith(stored.file, expect.objectContaining({ name: 'picked.csv' }));
-    expect(element.querySelector('[data-testid="spendings-count"]')?.textContent).toContain('2');
-  });
-
-  it('should show a validation error for an invalid file', async () => {
-    fileIo.readFile.mockRejectedValue(new SpendingsFileError(SpendingsFileErrorReason.InvalidRow, 'Line 2: bad row.'));
-    const { fixture, element } = await render();
-    const input = element.querySelector<HTMLInputElement>('input[type="file"]');
-    Object.defineProperty(input, 'files', { value: [new File(['x'], 'bad.csv')] });
-
-    input?.dispatchEvent(new Event('change'));
-    await fixture.whenStable();
-
-    expect(element.querySelector('[role="alert"]')?.textContent).toContain('Line 2: bad row.');
-    expect(storage.save).not.toHaveBeenCalled();
+    expect(buttonByLabel(element, 'Open menu')).toBeTruthy();
   });
 });
