@@ -2,7 +2,7 @@
 
 A personal spendings tracker that runs as an installable, offline-first Progressive Web App on your phone.
 
-All data lives in one JSON file that you own. The app opens that file from your phone, keeps a working copy in browser storage (IndexedDB), and exports it back as a file. It works the same offline and online, and there is no backend.
+All data lives in one CSV file that you own, in the same layout as a Monefy export. The app opens that file from your phone, keeps a working copy in browser storage (IndexedDB), and exports it back as a file. It works the same offline and online, and there is no backend.
 
 ## Status
 

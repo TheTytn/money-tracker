@@ -1,6 +1,6 @@
 # Money Tracker
 
-Offline-first Angular PWA for tracking personal spendings. Data lives in a user-owned JSON file, with a working copy in IndexedDB. No backend.
+Offline-first Angular PWA for tracking personal spendings. Data lives in a user-owned CSV file (Monefy export layout), with a working copy in IndexedDB. No backend.
 
 - Plan and scope: @docs/PLAN.md
 - Architecture: @docs/ARCHITECTURE.md

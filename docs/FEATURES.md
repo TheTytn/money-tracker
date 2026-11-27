@@ -10,7 +10,7 @@
 
 ## Later
 
-- [ ] Data file structure and schema versioning
+- [x] CSV data file in the Monefy export layout
 - [ ] Add, edit and delete spendings
 - [ ] Categories
 - [ ] Spendings list with search and filters

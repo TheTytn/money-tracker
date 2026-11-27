@@ -2,7 +2,7 @@
 
 ## Goal
 
-A personal spendings tracker as an Angular single page application, installable on the phone as a PWA. One JSON file acts as a portable database: the browser holds the live copy, the file is the backup and the way to move data between devices. No backend.
+A personal spendings tracker as an Angular single page application, installable on the phone as a PWA. One CSV file (Monefy export layout) acts as a portable database: the browser holds the live copy, the file is the backup and the way to move data between devices. No backend.
 
 ## Step 1 (current)
 
@@ -13,7 +13,7 @@ Scope:
 - Reopen the app offline and still see the stored file.
 - Install the app to the home screen.
 
-Out of scope: the real file structure, editing spendings, design.
+Out of scope: editing spendings, design.
 
 Setup steps:
 
@@ -34,7 +34,7 @@ Setup steps:
 | Storage       | IndexedDB through the `idb` wrapper; `navigator.storage.persist()` on first save                          |
 | Opening files | `<input type="file">` (File System Access API is not on iOS)                                              |
 | Saving files  | Blob download; Web Share API ("Save to Files") on mobile when available                                   |
-| File format   | JSON with a `version` field (may change later)                                                            |
+| File format   | CSV in the Monefy export layout (see [DATA_FORMAT.md](DATA_FORMAT.md))                                    |
 | Line endings  | LF, enforced by `.gitattributes`                                                                          |
 | Tests         | Vitest, spec files for everything                                                                         |
 | Workflow      | Branch, pull request, code review, merge                                                                  |
