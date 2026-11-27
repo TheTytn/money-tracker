@@ -3,20 +3,25 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FileIoService, SpendingsFileError, SpendingsFileErrorReason } from '@core/file-io';
 import { FileStorageService } from '@core/storage';
 
-import { SpendingsFile, StoredFile } from '@shared/models';
+import { Spending, SpendingsFile, StoredFile } from '@shared/models';
 
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
-  const emptyFile: SpendingsFile = {
-    version: 1,
-    createdAt: '2026-11-27T17:00:00.000Z',
-    updatedAt: '2026-11-27T17:00:00.000Z',
-    spendings: [],
+  const emptyFile: SpendingsFile = { spendings: [] };
+  const spending: Spending = {
+    date: '2024-02-03',
+    account: 'Cash',
+    category: 'Groceries',
+    amount: -12.5,
+    currency: 'EUR',
+    convertedAmount: -12.5,
+    convertedCurrency: 'EUR',
+    description: '',
   };
   const stored: StoredFile = {
-    file: { ...emptyFile, spendings: [{}, {}] },
-    meta: { name: 'mine.json', size: 123, savedAt: '2026-11-27T17:00:00.000Z' },
+    file: { spendings: [spending, { ...spending, amount: -3 }] },
+    meta: { name: 'mine.csv', size: 123, savedAt: '2026-11-27T17:00:00.000Z' },
   };
 
   let storage: { load: ReturnType<typeof vi.fn>; save: ReturnType<typeof vi.fn> };
@@ -46,7 +51,7 @@ describe('HomeComponent', () => {
     fileIo = {
       readFile: vi.fn(),
       createEmpty: vi.fn().mockReturnValue(emptyFile),
-      serialize: vi.fn().mockReturnValue('{}'),
+      serialize: vi.fn().mockReturnValue('header\n'),
       download: vi.fn().mockResolvedValue(undefined),
     };
 
@@ -72,7 +77,7 @@ describe('HomeComponent', () => {
 
     const { element } = await render();
 
-    expect(element.querySelector('[data-testid="file-name"]')?.textContent).toContain('mine.json');
+    expect(element.querySelector('[data-testid="file-name"]')?.textContent).toContain('mine.csv');
     expect(element.querySelector('[data-testid="spendings-count"]')?.textContent).toContain('2');
     expect(element.textContent).toContain('123 bytes');
   });
@@ -83,7 +88,7 @@ describe('HomeComponent', () => {
 
     buttonByText(element, 'Download').click();
 
-    expect(fileIo.download).toHaveBeenCalledWith(stored.file, 'mine.json');
+    expect(fileIo.download).toHaveBeenCalledWith(stored.file, 'mine.csv');
   });
 
   it('should create, store and download a new file', async () => {
@@ -92,13 +97,13 @@ describe('HomeComponent', () => {
     buttonByText(element, 'Create new file').click();
     await fixture.whenStable();
 
-    expect(storage.save).toHaveBeenCalledWith(emptyFile, expect.objectContaining({ name: 'money-tracker.json' }));
-    expect(fileIo.download).toHaveBeenCalledWith(emptyFile, 'money-tracker.json');
-    expect(element.querySelector('[data-testid="file-name"]')?.textContent).toContain('money-tracker.json');
+    expect(storage.save).toHaveBeenCalledWith(emptyFile, expect.objectContaining({ name: 'money-tracker.csv' }));
+    expect(fileIo.download).toHaveBeenCalledWith(emptyFile, 'money-tracker.csv');
+    expect(element.querySelector('[data-testid="file-name"]')?.textContent).toContain('money-tracker.csv');
   });
 
   it('should store an opened file', async () => {
-    const picked = new File(['{}'], 'picked.json');
+    const picked = new File(['header\n'], 'picked.csv');
     fileIo.readFile.mockResolvedValue(stored.file);
     const { fixture, element } = await render();
     const input = element.querySelector<HTMLInputElement>('input[type="file"]');
@@ -107,20 +112,20 @@ describe('HomeComponent', () => {
     input?.dispatchEvent(new Event('change'));
     await fixture.whenStable();
 
-    expect(storage.save).toHaveBeenCalledWith(stored.file, expect.objectContaining({ name: 'picked.json' }));
+    expect(storage.save).toHaveBeenCalledWith(stored.file, expect.objectContaining({ name: 'picked.csv' }));
     expect(element.querySelector('[data-testid="spendings-count"]')?.textContent).toContain('2');
   });
 
   it('should show a validation error for an invalid file', async () => {
-    fileIo.readFile.mockRejectedValue(new SpendingsFileError(SpendingsFileErrorReason.InvalidJson, 'Not JSON.'));
+    fileIo.readFile.mockRejectedValue(new SpendingsFileError(SpendingsFileErrorReason.InvalidRow, 'Line 2: bad row.'));
     const { fixture, element } = await render();
     const input = element.querySelector<HTMLInputElement>('input[type="file"]');
-    Object.defineProperty(input, 'files', { value: [new File(['x'], 'bad.json')] });
+    Object.defineProperty(input, 'files', { value: [new File(['x'], 'bad.csv')] });
 
     input?.dispatchEvent(new Event('change'));
     await fixture.whenStable();
 
-    expect(element.querySelector('[role="alert"]')?.textContent).toContain('Not JSON.');
+    expect(element.querySelector('[role="alert"]')?.textContent).toContain('Line 2: bad row.');
     expect(storage.save).not.toHaveBeenCalled();
   });
 });

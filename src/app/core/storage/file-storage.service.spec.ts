@@ -9,13 +9,8 @@ import { SpendingsFile, StoredFileMeta } from '@shared/models';
 import { FileStorageService } from './file-storage.service';
 
 describe('FileStorageService', () => {
-  const file: SpendingsFile = {
-    version: 1,
-    createdAt: '2026-11-27T17:00:00.000Z',
-    updatedAt: '2026-11-27T17:00:00.000Z',
-    spendings: [],
-  };
-  const meta: StoredFileMeta = { name: 'money-tracker.json', size: 100, savedAt: '2026-11-27T17:00:00.000Z' };
+  const file: SpendingsFile = { spendings: [] };
+  const meta: StoredFileMeta = { name: 'money-tracker.csv', size: 100, savedAt: '2026-11-27T17:00:00.000Z' };
 
   let service: FileStorageService;
   let persist: ReturnType<typeof vi.fn>;
@@ -44,10 +39,23 @@ describe('FileStorageService', () => {
 
   it('should replace the previously stored file', async () => {
     await service.save(file, meta);
-    const newer = { ...file, spendings: [{ amount: 1 }] };
-    await service.save(newer, { ...meta, name: 'other.json' });
+    const newer: SpendingsFile = {
+      spendings: [
+        {
+          date: '2024-02-03',
+          account: 'Cash',
+          category: 'Groceries',
+          amount: -1,
+          currency: 'EUR',
+          convertedAmount: -1,
+          convertedCurrency: 'EUR',
+          description: '',
+        },
+      ],
+    };
+    await service.save(newer, { ...meta, name: 'other.csv' });
 
-    expect(await service.load()).toEqual({ file: newer, meta: { ...meta, name: 'other.json' } });
+    expect(await service.load()).toEqual({ file: newer, meta: { ...meta, name: 'other.csv' } });
   });
 
   it('should clear the stored file', async () => {
