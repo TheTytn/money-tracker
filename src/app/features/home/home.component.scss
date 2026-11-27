@@ -1,0 +1,13 @@
+:host {
+  display: block;
+  padding: 1rem;
+}
+
+.home__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.home__error {
+  color: #b00020;
+}
