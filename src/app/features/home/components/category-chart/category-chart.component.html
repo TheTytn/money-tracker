@@ -1,0 +1,31 @@
+<div class="chart" role="img" [attr.aria-label]="'Spendings by category, total ' + (total() | number: '1.2-2')">
+  <svg class="chart__svg" viewBox="0 0 220 220" aria-hidden="true">
+    <circle class="chart__track" cx="110" cy="110" [attr.r]="radius" />
+    @for (slice of slices(); track slice.category) {
+      <circle
+        class="chart__slice"
+        cx="110"
+        cy="110"
+        [attr.r]="radius"
+        [attr.stroke]="slice.color"
+        [attr.stroke-dasharray]="slice.dashArray"
+        [attr.stroke-dashoffset]="slice.dashOffset"
+      />
+    }
+  </svg>
+  <div class="chart__center">
+    <span class="chart__caption">Total{{ currency() ? ', ' + currency() : '' }}</span>
+    <strong class="chart__total" data-testid="chart-total">{{ total() | number: '1.2-2' }}</strong>
+  </div>
+</div>
+
+<ul class="legend">
+  @for (slice of slices(); track slice.category) {
+    <li class="legend__item">
+      <span class="legend__dot" [style.background]="slice.color"></span>
+      <span class="legend__name">{{ slice.category }}</span>
+      <span class="legend__share">{{ slice.share | percent }}</span>
+      <span class="legend__amount">{{ slice.amount | number: '1.2-2' }}</span>
+    </li>
+  }
+</ul>

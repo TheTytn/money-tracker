@@ -1,0 +1,30 @@
+@if (menu.isOpen()) {
+  <div class="side-menu__scrim" aria-hidden="true" (click)="menu.close()"></div>
+  <nav class="side-menu__panel" aria-label="Main menu">
+    <p class="side-menu__brand">Money Tracker</p>
+    <a
+      class="side-menu__link"
+      routerLink="/"
+      routerLinkActive="side-menu__link--active"
+      ariaCurrentWhenActive="page"
+      [routerLinkActiveOptions]="{ exact: true }"
+      (click)="menu.close()"
+    >
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z" /></svg>
+      Home
+    </a>
+    <a
+      class="side-menu__link"
+      routerLink="/settings"
+      routerLinkActive="side-menu__link--active"
+      ariaCurrentWhenActive="page"
+      (click)="menu.close()"
+    >
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" />
+      </svg>
+      Settings
+    </a>
+  </nav>
+}

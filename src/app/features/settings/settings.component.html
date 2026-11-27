@@ -1,0 +1,38 @@
+<app-page-header heading="Settings" />
+
+<main class="page-content">
+  <h2 class="settings__label" id="stored-file-heading">Data file</h2>
+
+  <section class="settings__card" aria-labelledby="stored-file-heading">
+    @if (store.loading()) {
+      <p class="settings__empty">Loading…</p>
+    } @else if (store.stored(); as current) {
+      <dl class="settings__details">
+        <dt>Name</dt>
+        <dd data-testid="file-name">{{ current.meta.name }}</dd>
+        <dt>Size</dt>
+        <dd>{{ current.meta.size / 1024 | number: '1.0-1' }} KB</dd>
+        <dt>Saved at</dt>
+        <dd>{{ current.meta.savedAt | date: 'medium' }}</dd>
+        <dt>Entries</dt>
+        <dd data-testid="spendings-count">{{ store.spendings().length }}</dd>
+      </dl>
+    } @else {
+      <p class="settings__empty">No file stored yet. Open a file or create a new one.</p>
+    }
+  </section>
+
+  @if (store.error(); as message) {
+    <p class="error-message" role="alert">{{ message }}</p>
+  }
+
+  <input #fileInput type="file" accept=".csv,text/csv" hidden aria-label="Data file" (change)="openFile(fileInput)" />
+  @if (store.stored()) {
+    <button type="button" class="button button--primary" (click)="store.download()">Download file</button>
+  }
+  <button type="button" class="button" (click)="fileInput.click()">Open file</button>
+  <button type="button" class="button" (click)="store.createNew()">Create new file</button>
+  <p class="settings__hint">
+    Opening or creating a file replaces the data stored in this browser. Download a copy first if you want to keep it.
+  </p>
+</main>

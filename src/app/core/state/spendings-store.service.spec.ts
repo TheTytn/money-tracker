@@ -103,4 +103,41 @@ describe('SpendingsStore', () => {
 
     expect(fileIo.download).toHaveBeenCalledWith(file, 'mine.csv');
   });
+
+  it('should append an entry to the stored file and keep its name', async () => {
+    await store.load();
+    const entry: Spending = { ...spending, category: 'Taxi', amount: -7, convertedAmount: -7 };
+
+    const saved = await store.add(entry);
+
+    expect(saved).toBe(true);
+    expect(storage.save).toHaveBeenCalledWith(
+      { spendings: [spending, entry] },
+      expect.objectContaining({ name: 'mine.csv' }),
+    );
+    expect(store.spendings()).toEqual([spending, entry]);
+  });
+
+  it('should start a new file when adding with nothing stored', async () => {
+    storage.load.mockResolvedValue(undefined);
+    await store.load();
+
+    await store.add(spending);
+
+    expect(storage.save).toHaveBeenCalledWith(
+      { spendings: [spending] },
+      expect.objectContaining({ name: 'money-tracker.csv' }),
+    );
+  });
+
+  it('should report a failed save and keep the stored file', async () => {
+    await store.load();
+    storage.save.mockRejectedValue(new Error('quota'));
+
+    const saved = await store.add(spending);
+
+    expect(saved).toBe(false);
+    expect(store.error()).toBe('Could not save the entry.');
+    expect(store.spendings()).toEqual([spending]);
+  });
 });

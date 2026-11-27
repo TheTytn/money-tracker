@@ -1,0 +1,12 @@
+<header class="page-header">
+  @if (backLink(); as link) {
+    <a class="page-header__button" aria-label="Back" [routerLink]="link">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+    </a>
+  } @else {
+    <button type="button" class="page-header__button" aria-label="Open menu" (click)="menu.open()">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+    </button>
+  }
+  <h1 class="page-header__title">{{ heading() }}</h1>
+</header>

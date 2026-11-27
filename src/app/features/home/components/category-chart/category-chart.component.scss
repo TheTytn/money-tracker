@@ -1,0 +1,86 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.chart {
+  position: relative;
+  width: min(15rem, 70vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+}
+
+.chart__svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.chart__track,
+.chart__slice {
+  fill: none;
+  stroke-width: 34;
+}
+
+.chart__track {
+  stroke: var(--line);
+}
+
+.chart__center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+.chart__caption {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.chart__total {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.legend {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend__item {
+  display: grid;
+  grid-template-columns: 0.75rem minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.9rem;
+}
+
+.legend__dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.legend__name {
+  overflow-wrap: anywhere;
+}
+
+.legend__share {
+  min-width: 3em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.legend__amount {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  text-align: right;
+}

@@ -49,6 +49,21 @@ export class SpendingsStore {
     }
   }
 
+  /** Appends a row to the stored file, or starts a new file when nothing is stored yet. */
+  async add(spending: Spending): Promise<boolean> {
+    this.errorState.set(undefined);
+    const current = this.storedState();
+    const file: SpendingsFile = { spendings: [...(current?.file.spendings ?? []), spending] };
+    try {
+      const size = new Blob([this.fileIo.serialize(file)]).size;
+      await this.store(file, current?.meta.name ?? DEFAULT_FILE_NAME, size);
+      return true;
+    } catch {
+      this.errorState.set('Could not save the entry.');
+      return false;
+    }
+  }
+
   async download(): Promise<void> {
     const stored = this.storedState();
     if (!stored) {
