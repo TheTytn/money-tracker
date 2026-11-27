@@ -22,14 +22,14 @@ npm start          # dev server at http://localhost:4200
 
 ## Scripts
 
-| Command | What it does |
-|---|---|
-| `npm start` | Run the dev server |
-| `npm run build` | Production build into `dist/` |
-| `npm test` | Unit tests (Vitest) in watch mode |
-| `npm run test:ci` | Unit tests once |
-| `npm run lint` | ESLint |
-| `npm run format:check` | Prettier check |
+| Command                | What it does                      |
+| ---------------------- | --------------------------------- |
+| `npm start`            | Run the dev server                |
+| `npm run build`        | Production build into `dist/`     |
+| `npm test`             | Unit tests (Vitest) in watch mode |
+| `npm run test:ci`      | Unit tests once                   |
+| `npm run lint`         | ESLint                            |
+| `npm run format:check` | Prettier check                    |
 
 Git hooks run automatically: pre-commit fixes and formats staged files, pre-push runs lint, the format check and tests.
 

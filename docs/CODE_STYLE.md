@@ -24,7 +24,17 @@ General code style rules for this Angular app. Referenced from `CLAUDE.md`. Exac
     "importOrderParserPlugins": ["typescript", "decorators-legacy"],
     "importOrderSeparation": true,
     "importOrderSortSpecifiers": true,
-    "importOrder": ["^@angular/(.*)$", "<THIRD_PARTY_MODULES>", "^@core/(.*)$", "^@features/(.*)$", "^@shared/(.*)$", "^@app/(.*)$", "^rxjs$", "^rxjs/(.*)$", "^[./]"]
+    "importOrder": [
+      "^@angular/(.*)$",
+      "<THIRD_PARTY_MODULES>",
+      "^@core/(.*)$",
+      "^@features/(.*)$",
+      "^@shared/(.*)$",
+      "^@app/(.*)$",
+      "^rxjs$",
+      "^rxjs/(.*)$",
+      "^[./]"
+    ]
   }
   ```
   Add each new path alias to `importOrder`. The full file is in [TOOLING.md](TOOLING.md).
@@ -46,15 +56,15 @@ General code style rules for this Angular app. Referenced from `CLAUDE.md`. Exac
 
 ## 3. Naming & files
 
-| Item | Style | Example |
-|---|---|---|
-| File | `kebab-case.<type>.ts` | `spending-list.component.ts`, `spending.service.ts`, `category-type.enum.ts`, `unsaved-changes.guard.ts`, `spending-detail.resolver.ts` |
-| Class | `PascalCase` + suffix | `SpendingListComponent`, `SpendingService`, `UnsavedChangesGuard` |
-| Interface / type | `PascalCase`, **no** `I` prefix | `SpendingDetail`, `PagedList<T>` |
-| Variable, method, property | `camelCase` | `currentView` |
-| Constant | `UPPER_SNAKE_CASE` | `TABLE_ROWS` |
-| Observable | `name$` (optional but be consistent) | `spendings$` |
-| Selector | `app-kebab-case` | `app-spending-list` |
+| Item                       | Style                                | Example                                                                                                                                 |
+| -------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| File                       | `kebab-case.<type>.ts`               | `spending-list.component.ts`, `spending.service.ts`, `category-type.enum.ts`, `unsaved-changes.guard.ts`, `spending-detail.resolver.ts` |
+| Class                      | `PascalCase` + suffix                | `SpendingListComponent`, `SpendingService`, `UnsavedChangesGuard`                                                                       |
+| Interface / type           | `PascalCase`, **no** `I` prefix      | `SpendingDetail`, `PagedList<T>`                                                                                                        |
+| Variable, method, property | `camelCase`                          | `currentView`                                                                                                                           |
+| Constant                   | `UPPER_SNAKE_CASE`                   | `TABLE_ROWS`                                                                                                                            |
+| Observable                 | `name$` (optional but be consistent) | `spendings$`                                                                                                                            |
+| Selector                   | `app-kebab-case`                     | `app-spending-list`                                                                                                                     |
 
 - One component/service/pipe/directive per file. Template, styles and spec are siblings with the same base name.
 - Don't abbreviate; names say what the thing is.

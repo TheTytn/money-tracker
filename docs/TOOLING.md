@@ -4,20 +4,21 @@ Exact config files for formatting, linting, git hooks and tests. The rules they 
 
 ## Summary
 
-| Area | Setting |
-|---|---|
-| Formatter | Prettier 3 + `@trivago/prettier-plugin-sort-imports`; 120 cols, single quotes, trailing commas, semicolons, **LF**, `arrowParens: always`, `htmlWhitespaceSensitivity: ignore` |
-| Import order | `@angular` → third party → `@core` → `@features` → `@shared` → `@app` → `@environments` → `rxjs` → relative; groups separated by a blank line, specifiers sorted |
-| Linter | ESLint flat config: `@eslint/js` recommended, `typescript-eslint` recommended + stylistic, `angular-eslint` tsRecommended + templateRecommended + templateAccessibility, `eslint-config-prettier`, `eslint-plugin-unused-imports` |
-| Key lint rules | unused imports = error; unused vars error unless prefixed `_`; `no-explicit-any` warn; selectors `app-` kebab / `app` camelCase; a11y template rules as warnings; `prefer-standalone` and `prefer-inject` **on** (defaults) |
-| Line endings | LF, enforced by `.gitattributes` so editing on Windows never changes line endings in commits |
-| EditorConfig | UTF-8, 2 spaces, LF, final newline, trim trailing whitespace, single quotes in `.ts` |
-| TypeScript | `strict: true` with `strictPropertyInitialization: false`; `noImplicitOverride`, `noImplicitReturns`, `noFallthroughCasesInSwitch`; Angular `strictTemplates`, `strictInjectionParameters`, `strictInputAccessModifiers` |
-| Tests | Vitest (Angular CLI default); spec files generated for every schematic |
-| Git hooks | Husky + lint-staged at the repo root. `pre-commit`: `eslint --fix` + `prettier --write` on staged files. `pre-push`: lint, Prettier check, unit tests |
-| Stylelint | Not used |
+| Area           | Setting                                                                                                                                                                                                                           |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Formatter      | Prettier 3 + `@trivago/prettier-plugin-sort-imports`; 120 cols, single quotes, trailing commas, semicolons, **LF**, `arrowParens: always`, `htmlWhitespaceSensitivity: ignore`                                                    |
+| Import order   | `@angular` → third party → `@core` → `@features` → `@shared` → `@app` → `@environments` → `rxjs` → relative; groups separated by a blank line, specifiers sorted                                                                  |
+| Linter         | ESLint flat config: `@eslint/js` recommended, `typescript-eslint` recommended + stylistic, `angular-eslint` tsRecommended + templateRecommended + templateAccessibility, `eslint-config-prettier`, `eslint-plugin-unused-imports` |
+| Key lint rules | unused imports = error; unused vars error unless prefixed `_`; `no-explicit-any` warn; selectors `app-` kebab / `app` camelCase; a11y template rules as warnings; `prefer-standalone` and `prefer-inject` **on** (defaults)       |
+| Line endings   | LF, enforced by `.gitattributes` so editing on Windows never changes line endings in commits                                                                                                                                      |
+| EditorConfig   | UTF-8, 2 spaces, LF, final newline, trim trailing whitespace, single quotes in `.ts`                                                                                                                                              |
+| TypeScript     | `strict: true` with `strictPropertyInitialization: false`; `noImplicitOverride`, `noImplicitReturns`, `noFallthroughCasesInSwitch`; Angular `strictTemplates`, `strictInjectionParameters`, `strictInputAccessModifiers`          |
+| Tests          | Vitest (Angular CLI default); spec files generated for every schematic                                                                                                                                                            |
+| Git hooks      | Husky + lint-staged at the repo root. `pre-commit`: `eslint --fix` + `prettier --write` on staged files. `pre-push`: lint, Prettier check, unit tests                                                                             |
+| Stylelint      | Not used                                                                                                                                                                                                                          |
 
 ### `.gitattributes`
+
 ```
 * text=auto eol=lf
 *.png binary
@@ -26,9 +27,11 @@ Exact config files for formatting, linting, git hooks and tests. The rules they 
 *.woff binary
 *.woff2 binary
 ```
+
 On Windows also run once: `git config core.autocrlf false`, so Git does not convert files to CRLF on checkout.
 
 ### `.editorconfig`
+
 ```ini
 # Editor configuration, see https://editorconfig.org
 root = true
@@ -50,6 +53,7 @@ trim_trailing_whitespace = false
 ```
 
 ### `.prettierrc.json`
+
 ```json
 {
   "trailingComma": "all",
@@ -84,6 +88,7 @@ trim_trailing_whitespace = false
 ```
 
 ### `.prettierignore`
+
 ```
 # Ignore path
 **/node_modules/
@@ -106,6 +111,7 @@ trim_trailing_whitespace = false
 ```
 
 ### `eslint.config.js`
+
 ```js
 // @ts-check
 const eslint = require('@eslint/js');
@@ -161,6 +167,7 @@ module.exports = defineConfig([
 ```
 
 ### `tsconfig.json` compiler and Angular options
+
 ```json
 {
   "compileOnSave": false,
@@ -199,25 +206,32 @@ module.exports = defineConfig([
   }
 }
 ```
+
 Keep the CLI-generated `target`, `module`, `useDefineForClassFields` and `references` layout; merge in the strictness flags and `paths` above.
 
 ### `angular.json` pieces
+
 Inside the project:
+
 ```json
 "schematics": {
   "@schematics/angular:component": { "style": "scss" }
 },
 "prefix": "app",
 ```
+
 Spec files stay on (no `skipTests`). In `architect.build.options`: `"inlineStyleLanguage": "scss"`, `"styles": ["src/styles.scss"]`.
 Lint target:
+
 ```json
 "lint": {
   "builder": "@angular-eslint/builder:lint",
   "options": { "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"] }
 }
 ```
+
 Top level:
+
 ```json
 "cli": { "analytics": false, "schematicCollections": ["angular-eslint"] },
 "schematics": {
@@ -230,12 +244,15 @@ Top level:
   "@schematics/angular:resolver": { "typeSeparator": "." }
 }
 ```
+
 This keeps file names like `foo.component.ts`, `foo.service.ts`, `foo.guard.ts`.
 
 Budgets: initial 500kb warn / 1mb error; anyComponentStyle 2kb warn / 10kb error.
 
 ### `package.json` pieces
+
 `package.json` sits at the repository root, next to `.git`, so Husky hooks actually run.
+
 ```json
 "scripts": {
   "ng": "ng",
@@ -252,14 +269,17 @@ Budgets: initial 500kb warn / 1mb error; anyComponentStyle 2kb warn / 10kb error
   "**/*": ["eslint --fix", "prettier --write --ignore-unknown"]
 }
 ```
+
 Dev dependencies: `@eslint/js`, `eslint`, `typescript-eslint`, `angular-eslint`, `eslint-config-prettier`, `eslint-plugin-unused-imports`, `prettier`, `@trivago/prettier-plugin-sort-imports`, `husky`, `lint-staged` (latest versions at setup). Easiest path: `ng add angular-eslint`, then `npm i -D` the rest.
 
 ### `.husky/pre-commit`
+
 ```
 npx lint-staged
 ```
 
 ### `.husky/pre-push`
+
 ```
 npm run lint
 npm run format:check

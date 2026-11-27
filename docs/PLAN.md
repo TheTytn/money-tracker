@@ -27,17 +27,17 @@ Setup steps:
 
 ## Decisions
 
-| Topic | Decision |
-|---|---|
-| Framework | Latest stable Angular, standalone components, signals, `inject()` |
-| PWA | Angular service worker via `ng add @angular/pwa` |
-| Storage | IndexedDB through the `idb` wrapper; `navigator.storage.persist()` on first save |
-| Opening files | `<input type="file">` (File System Access API is not on iOS) |
-| Saving files | Blob download; Web Share API ("Save to Files") on mobile when available |
-| File format | JSON with a `version` field (may change later) |
-| Line endings | LF, enforced by `.gitattributes` |
-| Tests | Vitest, spec files for everything |
-| Workflow | Branch, pull request, code review, merge |
+| Topic         | Decision                                                                         |
+| ------------- | -------------------------------------------------------------------------------- |
+| Framework     | Latest stable Angular, standalone components, signals, `inject()`                |
+| PWA           | Angular service worker via `ng add @angular/pwa`                                 |
+| Storage       | IndexedDB through the `idb` wrapper; `navigator.storage.persist()` on first save |
+| Opening files | `<input type="file">` (File System Access API is not on iOS)                     |
+| Saving files  | Blob download; Web Share API ("Save to Files") on mobile when available          |
+| File format   | JSON with a `version` field (may change later)                                   |
+| Line endings  | LF, enforced by `.gitattributes`                                                 |
+| Tests         | Vitest, spec files for everything                                                |
+| Workflow      | Branch, pull request, code review, merge                                         |
 
 ## Open questions
 

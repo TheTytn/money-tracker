@@ -1,0 +1,18 @@
+# Ignore path
+**/node_modules/
+**/.angular
+**/src/assets/
+**/.vscode/
+**/dist/
+# Ignore all files with extension:
+*.woff2
+*.woff
+*.png
+*.gitkeep
+*.gitignore
+*.browserslistrc
+*.editorconfig
+*.prettierignore
+*.ico
+**/docker/
+**/Dockerfile

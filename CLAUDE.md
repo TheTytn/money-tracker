@@ -9,6 +9,7 @@ Offline-first Angular PWA for tracking personal spendings. Data lives in a user-
 - Data file format: @docs/DATA_FORMAT.md
 
 Rules:
+
 - Standalone components, signals, `inject()`. No NgModules.
 - Every new component, service, pipe, directive or guard gets a spec file.
 - Before pushing: `npm run lint`, `npm run format:check`, `npm run test:ci`, `npm run build` must pass.
