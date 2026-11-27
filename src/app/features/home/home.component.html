@@ -1,0 +1,39 @@
+<h1>Money Tracker</h1>
+
+<div class="home__actions">
+  <input
+    #fileInput
+    type="file"
+    accept=".json,application/json"
+    hidden
+    aria-label="Data file"
+    (change)="openFile(fileInput)"
+  />
+  <button type="button" (click)="fileInput.click()">Open file</button>
+  <button type="button" (click)="createNew()">Create new file</button>
+</div>
+
+@if (error(); as message) {
+  <p class="home__error" role="alert">{{ message }}</p>
+}
+
+<section aria-labelledby="stored-file-heading">
+  <h2 id="stored-file-heading">Stored file</h2>
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else if (stored(); as current) {
+    <dl>
+      <dt>Name</dt>
+      <dd data-testid="file-name">{{ current.meta.name }}</dd>
+      <dt>Size</dt>
+      <dd>{{ current.meta.size }} bytes</dd>
+      <dt>Saved at</dt>
+      <dd>{{ current.meta.savedAt | date: 'medium' }}</dd>
+      <dt>Spendings</dt>
+      <dd data-testid="spendings-count">{{ spendingsCount() }}</dd>
+    </dl>
+    <button type="button" (click)="download()">Download</button>
+  } @else {
+    <p>No file stored yet. Open a file or create a new one.</p>
+  }
+</section>
