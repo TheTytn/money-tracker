@@ -38,10 +38,11 @@ Setup steps:
 | Line endings  | LF, enforced by `.gitattributes`                                                                          |
 | Tests         | Vitest, spec files for everything                                                                         |
 | Workflow      | Branch, pull request, code review, merge                                                                  |
+| Hosting       | GitHub Pages, deployed by GitHub Actions on every push to `main`                                          |
 
 ## Open questions
 
-- Hosting: GitHub Pages suggested.
+- None right now.
 
 ## Known limitations
 

@@ -44,6 +44,12 @@ npx http-server dist/money-tracker/browser -p 8080
 
 Open http://localhost:8080, then check offline mode in DevTools, or install the app from the browser menu.
 
+## Deployment
+
+Every push to `main` is built and deployed to GitHub Pages by [.github/workflows/deploy.yml](.github/workflows/deploy.yml): https://thetytn.github.io/money-tracker/
+
+Pull requests run the same lint, format, test and build steps without deploying.
+
 ## Documentation
 
 - [Plan](docs/PLAN.md): milestones and setup steps
